@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, `public`)));
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'ilovedad',
+    password: '',
     database: 'final',
     multipleStatements: true
 
