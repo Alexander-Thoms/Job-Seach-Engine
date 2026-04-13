@@ -1,0 +1,15 @@
+
+<img src="logo.png" alt="Job Search Logo" width="50px" height="50px" class="image"><br>
+<div class="backgroundblur">
+<form action="/search" method="GET" role="search">
+  <input type="search" name="search" placeholder="Search">
+  <button class="searchbtn" type="submit">search</button>
+</form>
+{{{links}}}
+<form action="/save" method="POST" name="save">
+<button type="submit" class="secondary">save to database</button>
+</form>
+<form action="/saved" method="GET">
+    <button type="submit" class="secondary">View saved Jobs</button>
+</form>
+</div>
