@@ -7,6 +7,7 @@ const expresshandlebars = require(`express-handlebars`);
 const engine = expresshandlebars.engine;
 const dotenv = require('dotenv');
 dotenv.config();
+const sqlpass = process.env.sqlpassword;
 const api = process.env.API_KEY;
 const url = `https://jsearch.p.rapidapi.com/search?query=`;
 let resultarray = [];
@@ -20,7 +21,7 @@ app.use(express.static(path.join(__dirname, `public`)));
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: sqlpass,
     database: 'final',
     multipleStatements: true
 
@@ -127,8 +128,8 @@ app.get(`/saved`, async(req, res)=>{
 app.post(`/save`, async(req, res)=>{
     for(let index = 0; index < resultarray.length; index++){
         let output = resultarray[index]
-        let insertcode =  `insert into jobs(links) values ("${output}")`;
-        connection.query(insertcode, (error, results, field)=>{
+        let insertcode =  `insert into jobs(links) values (?)`;
+        connection.query(insertcode,[output], (error, results, field)=>{
         if(error){
            console.warn(error);
         }
