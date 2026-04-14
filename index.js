@@ -1,6 +1,7 @@
 const port = 8080
 const express = require("express");
 const app = express();
+app.disable('x-powered-by'); // information exporure disable x powered by
 const mysql = require("mysql2");
 const path = require('path');
 const expresshandlebars = require(`express-handlebars`);
@@ -15,6 +16,13 @@ app.engine(`hbs`, engine({extname: `.hbs`}));
 app.set(`view engine`, `hbs`);
 app.set(`views`, `./views`);
 app.use(express.static(path.join(__dirname, `public`)));
+const ratelimit = require('express-rate-limit');
+
+const limit = ratelimit({
+    windowMs: 1*60 *1000, // one min
+    max: 10,
+    message: "too many requests from this IP!"
+});
 
 
 
@@ -52,7 +60,7 @@ function makelinks(namesparam){
 // CREATE SCHEMA `final` ;
 // create table jobs( links TEXT NOT NULL);
 
-app.post(`/remove`, async(req,res)=>{
+app.post(`/remove`, limit, async(req,res)=>{
        
         let removecode = `drop table jobs; create table jobs( links TEXT NOT NULL);`;
         connection.query(removecode, (error, results, field)=>{
@@ -66,24 +74,33 @@ app.post(`/remove`, async(req,res)=>{
 });
 
 
-app.get("/", (req, res)=>{
+app.get("/", limit, (req, res)=>{
     res.render(`home`, {layout: `home`, searchlink: '/search', savedlink: `/saved`});
 });
 
 
 
-app.get(`/search`, async(req, res)=>{
+app.get(`/search`, limit, async(req, res)=>{
    if(res.response == 400){
     res.redirect("/");
    }
-    let usersearch = req.query.search;
+    let usersearch = req.query.search || "";// improper type validation
     if(!usersearch){
         console.log(`no input`);
        usersearch = "";
     
     }
+    if(typeof(usersearch) !== "string"){
+        return res.status.status(400).send("enter a string");
+    }
+    if(usersearch.includes('http') || usersearch.includes('https') || usersearch.includes("/")){
+        return res.status(400).send("no!");
+    }
     let end = `&page=1&num_pages=1&country=ca&date_posted=all`;
     let customurl = url + usersearch + end;
+    if(typeof(customurl) !== "string"){
+        return res.status(400).send("stop hacking");
+    }
     const options = {
   method: 'GET',
   headers: {
@@ -94,7 +111,9 @@ app.get(`/search`, async(req, res)=>{
 };
 
 
-	const response = await fetch(customurl, options);
+
+
+	const response = await fetch(customurl, options); //SSRF
 	const result = await response.json();
     let data = result.data || [];
     for(let index = 0; index < data.length; index++){
