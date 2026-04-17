@@ -1,12 +1,13 @@
 const port = 8080
 const express = require("express");
 const app = express();
-app.disable('x-powered-by'); // information exporure disable x powered by
 const mysql = require("mysql2");
 const path = require('path');
 const expresshandlebars = require(`express-handlebars`);
 const engine = expresshandlebars.engine;
 const dotenv = require('dotenv');
+const helmet = require('helmet');
+app.use(helmet());
 dotenv.config();
 const sqlpass = process.env.sqlpassword;
 const api = process.env.API_KEY;
