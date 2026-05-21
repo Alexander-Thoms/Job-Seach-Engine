@@ -40,3 +40,14 @@ Helmet.js for HTTP header protection
 Rate limiting 10 per IP
 enviroment files for sensitive data
 basic input validation for malformed queries 
+
+## Screenshots
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/ac33da59-2a92-46c1-9a10-660c4442db1c" width="900" alt="Homepage screenshot" />
+  <br/><br/>
+  <img src="https://github.com/user-attachments/assets/a4874275-28ff-4dd2-8868-71ef59df96c3" width="900" alt="Search results screenshot" />
+  <br/><br/>
+  <img src="https://github.com/user-attachments/assets/c2ff6dbc-2dc0-450f-a9b4-6c85cc3f63d7" width="900" alt="Saved page screenshot" />
+</div>
+
+
